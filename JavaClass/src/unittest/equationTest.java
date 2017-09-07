@@ -1,4 +1,4 @@
-package junit;
+package unittest;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MyMathTest {
+import equation.Equation;
+
+public class equationTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -27,8 +29,11 @@ public class MyMathTest {
 	}
 
 	@Test
-	public void test() {
-		assertEquals(1,1);
+	public void testEquation() {
+		Equation obj = new Equation();
+		obj.set("x^3+6x^2+x+4");
+		assertTrue(obj.compile());
+		assertTrue( 0 < obj.execute());
 	}
 
 }

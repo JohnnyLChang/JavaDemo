@@ -13,6 +13,6 @@ test:
 clean:
 	$(ANT) -buildfile $(BUILD) clean
 
-
+.PHONY: all test
 
 

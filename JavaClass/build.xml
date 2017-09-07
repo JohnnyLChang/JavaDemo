@@ -44,7 +44,7 @@
 	</target>
 	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects" />
 	<target name="Johnny">
-		<java classname="hello.HelloWorld" failonerror="true" fork="yes">
+		<java classname="main.Main" failonerror="true" fork="yes">
 			<classpath refid="Antbuild.classpath" />
 		</java>
 	</target>
@@ -52,7 +52,7 @@
 		<mkdir dir="lib" />
 		<jar jarfile="lib/${ant.project.name}.jar" basedir="bin">
 			<manifest>
-				<attribute name="Main-Class" value="hello.HelloWorld" />
+				<attribute name="Main-Class" value="main.Main" />
 			</manifest>
 		</jar>
 		<chmod file="lib/${ant.project.name}.jar" perm="u+x" type="both"/>
@@ -63,7 +63,8 @@
 		<mkdir dir="${junit.output.dir}" />
 		<junit fork="yes" printsummary="withOutAndErr">
 			<formatter type="xml" />
-			<test name="junit.MyMathTest" todir="${junit.output.dir}" />
+			<test name="unittest.ShapeTest" todir="${junit.output.dir}" />
+			<test name="unittest.equationTest" todir="${junit.output.dir}" />
 			<jvmarg line="-ea" />
 			<classpath refid="Antbuild.classpath" />
 		</junit>
