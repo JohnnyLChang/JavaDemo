@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import com.oracle.tutorial.jdbc.*;
+
 public class Main {
 	private static Connection con = null;
 	private static String keypath = "/home/johnny/.ssh/";
@@ -28,19 +30,17 @@ public class Main {
 		// Read public key from file.
 		File fileForPublicKey = Paths.get(path, "db_rsa.public").toFile();
 		log.info("Public key will be loaded from '{}'.", fileForPublicKey);
-		
+
 		File fileForPrivateKey = Paths.get(path, "db_rsa.private").toFile();
 		log.info("Private key will be loaded from '{}'.", fileForPrivateKey);
 
-        
 		PublicKey publicKey = null;
 		PrivateKey privateKey = null;
 		try {
-			byte[] privateKeyContent = Files.readAllBytes(Paths.get(path, "db_rsa.public"));			
+			byte[] privateKeyContent = Files.readAllBytes(Paths.get(path, "db_rsa.public"));
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(privateKeyContent);
 			publicKey = keyFactory.generatePublic(spec);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.trace("Public key load failure {}", e.getMessage());
 		}
 
@@ -48,10 +48,43 @@ public class Main {
 			byte[] privateKeyContent = Files.readAllBytes(Paths.get(path, "db_rsa.private"));
 			EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyContent);
 			privateKey = keyFactory.generatePrivate(spec);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			log.trace("Private key load failure {}", e.getMessage());
 		}
 		return new KeyPair(publicKey, privateKey);
+	}
+
+	public static void viewTable(Connection con, String dbName, String tbName) throws SQLException {
+
+		Statement stmt = null;
+		String query = "select * from " + dbName + "." + tbName;
+		try {
+			stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int colcount = rsmd.getColumnCount();
+			System.out.println("colcount:"+colcount);
+			for(int i=1;i<=colcount;++i) {
+				System.out.println(rsmd.getColumnName(i));
+			}
+			rs.last();
+			int rowcount = rs.getRow();
+			System.out.println("rowcount:"+rowcount);
+			rs.beforeFirst();
+			while (rs.next()) {
+				String row = "";
+		        for (int i = 1; i <= colcount; i++) {
+		            row += rs.getString(i) + ", ";          
+		        }
+		        System.out.println(row);
+			}
+		} catch (SQLException e) {
+			JDBCTutorialUtilities.printSQLException(e);
+		} finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
 	}
 
 	public static void ConnectDB() {
@@ -86,9 +119,10 @@ public class Main {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		Configurator.setRootLevel(Level.TRACE);
 		LoadRSAKey();
 		ConnectDB();
+		viewTable(con, "sakila", "actor");
 	}
 }

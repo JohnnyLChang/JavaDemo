@@ -1,0 +1,48 @@
+mysql> source /media/sd128/sdcard/prog/java/mysql/hw1.sql
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 14 rows affected (0.01 sec)
+Rows matched: 14  Changed: 14  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 14 rows affected (0.00 sec)
+
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
++----------+
+| count(*) |
++----------+
+|       14 |
++----------+
+1 row in set (0.00 sec)
+
++-------+------+
+| empno | SAL  |
++-------+------+
+|  7369 |  880 |
+|  7499 | 1760 |
+|  7521 | 1375 |
+|  7566 | 3273 |
+|  7654 | 1375 |
+|  7698 | 3135 |
+|  7782 | 2695 |
+|  7788 | 3300 |
+|  7839 | 5500 |
+|  7844 | 1650 |
+|  7876 | 1210 |
+|  7900 | 1045 |
+|  7902 | 3300 |
+|  7934 | 1430 |
++-------+------+
+14 rows in set (0.00 sec)
+
