@@ -2,6 +2,8 @@ package container;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class TernarySearchTreeTest extends TernarySearchTree {
@@ -24,6 +26,9 @@ public class TernarySearchTreeTest extends TernarySearchTree {
 		t.Insert("BBBB");
 		t.Insert("Johnny");
 		t.Insert("Johnny Chang");
+		t.Insert("Johnny Chang");
+		t.Insert("Johnny Chang");
+		t.Insert("Johnny Chang");
 		t.Insert("Johnny L Chang");
 		t.Insert("Oliver");
 		
@@ -40,7 +45,9 @@ public class TernarySearchTreeTest extends TernarySearchTree {
 		assertTrue(t.Search("Johnny L Chang"));
 		assertFalse(t.Search("Johnny LChang"));
 		assertFalse(t.Search("JohnnyChan"));
-		t.Sort();
+		ArrayList<String> ret = t.Sort();
+		System.out.println(ret);
+		assertEquals(7, ret.size());
 	}
 	
 	@Test
@@ -53,9 +60,39 @@ public class TernarySearchTreeTest extends TernarySearchTree {
 		t.Insert("Johnny Chonggg");
 		t.Insert("Oliver");
 		t.Insert("Oliver Lin");
-		t.PrefixSearch("Oliver");
-		t.PrefixSearch("Johnny");
+		ArrayList<String> ret = t.PrefixSearch("Oliver");
+		System.out.println(ret);
+		assertEquals(2, ret.size());
+		ret = t.PrefixSearch("Johnny");
+		System.out.println(ret);
+		assertEquals(5, ret.size());
 	}
+	
+	@Test
+	public void testSerialize() {
+		TernarySearchTree t = new TernarySearchTree();
+		t.Insert("Johnny");
+		t.Insert("Johnny Cha");
+		t.Insert("Johnny Chen");
+		t.Insert("Johnny Ching");
+		t.Insert("Johnny Chonggg");
+		t.Insert("Oliver");
+		t.Insert("Oliver Lin");
+		ArrayList<String> ret = t.PrefixSearch("Oliver");
+		System.out.println(ret);
+		assertEquals(2, ret.size());
+		
+		System.out.println(t.Sort());
+		t.save();
+		
+		TernarySearchTree u = new TernarySearchTree();
+		u.load();
+		System.out.println(u.Sort());
+		ret = u.PrefixSearch("Oliver");
+		System.out.println(ret);
+		assertEquals(2, ret.size());
+	}
+
 
 	@Test
 	public void testDelete() {

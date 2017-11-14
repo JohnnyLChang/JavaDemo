@@ -1,17 +1,61 @@
 package container;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class TernarySearchTree implements IContainer<String> {
+	TNodePool tst;
 	TNode root;
+	String filename = "tst.blob";
 	
-	TernarySearchTree(){
-		root = new TNode(0);
+	public TernarySearchTree(){
+		tst = new TNodePool();
+		root = tst.getRoot();
 	}
 	
-	public void load(String filename) {
-		
+	public int getPoolSize() {
+		return tst.getSize();
 	}
+	
+	public int getRootValue() {
+		return root.getValue();
+	}
+	
+	public void load() {
+	    ObjectInputStream objectinputstream;
+		try {
+			FileInputStream streamIn = new FileInputStream(filename);
+			objectinputstream = new ObjectInputStream(streamIn);
+			TNodePool tmp = (TNodePool) objectinputstream.readObject();
+			tst = tmp;
+			root = tst.getRoot();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void save() {
+		FileOutputStream fout;
+		try {
+			fout = new FileOutputStream(filename);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(tst);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 	
 	//insert new string
 	public void Insert(String str){
@@ -36,21 +80,24 @@ public class TernarySearchTree implements IContainer<String> {
 		it.setLeaf();
 	}
 	
-	public void Sort() {
-		this.Sort(this.root, "");
+	public ArrayList<String> Sort() {
+		ArrayList<String> ret = new ArrayList<String>();
+		this.Sort(this.root, "", ret);
+		return ret;
 	}
 	
-	private void Sort(TNode it, String prefix) {
+	private void Sort(TNode it, String prefix, ArrayList<String> ret) {
 		if(it == null)
 			return;
 		if(it.isLeaf())
-			System.out.println(prefix);
-		this.Sort(it.leftNode, prefix);
-		this.Sort(it.equalNode, prefix + (char)it.value);
-		this.Sort(it.rightNode, prefix);
+			ret.add(prefix);
+		this.Sort(it.leftNode, prefix, ret);
+		this.Sort(it.equalNode, prefix + (char)it.getValue(), ret);
+		this.Sort(it.rightNode, prefix, ret);
 	}
 	
 	public void dump() {
+		System.out.println("dump tst");
 		this.dump(root);
 	}
 	
@@ -84,9 +131,10 @@ public class TernarySearchTree implements IContainer<String> {
 		return it.isLeaf();
 	}
 	
-	public void PrefixSearch(String str) {
+	public ArrayList<String> PrefixSearch(String str) {
 		TNode it = this.root;
-		if(it == null) return;
+		ArrayList<String> ret = new ArrayList<String>();
+		if(it == null) return ret;
 		
 		for(char c : str.toCharArray()) {
 			int v = (int)(c);
@@ -101,81 +149,27 @@ public class TernarySearchTree implements IContainer<String> {
 					it = it.leftNode;
 			}
 		}
-		if(it == null) return;
-		dumpSuffix(it, str);
+		if(it == null) return ret;
+		dumpSuffix(it, str, ret);
+		return ret;
 	}
 	
-	public void dumpSuffix(TNode it, String prefix) {
+	void dumpSuffix(TNode it, String prefix, ArrayList<String> result) {
 		if(it == null) return;
 		if(it.isLeaf())
-			System.out.println("leaf:"+prefix);
-		this.dumpSuffix(it.leftNode, prefix);
-		this.dumpSuffix(it.equalNode, prefix + (char)it.value);
-		this.dumpSuffix(it.rightNode, prefix);
+			result.add(prefix);
+		this.dumpSuffix(it.leftNode, prefix, result);
+		this.dumpSuffix(it.equalNode, prefix + (char)it.getValue(), result);
+		this.dumpSuffix(it.rightNode, prefix, result);
 	}
 	
 	public void Delete(String str) {
 		
 	}
 	
-	class TNode implements Serializable{
-		private static final long serialVersionUID = 1L;
-		public TNode leftNode;
-		public TNode rightNode;
-		public TNode equalNode;
-		private boolean leafNode;
-		private int subTreeSize;
-		private int value;
-		
-		public TNode(int v) {
-			this.value = v;
-			this.subTreeSize = 0;
-			leafNode = false;
-		}
-		
-		public TNode getRight() {
-			if(this.rightNode == null)
-				this.rightNode = new TNode(0);
-			return this.rightNode;
-		}
-		
-		public TNode getLeft() {
-			if(this.leftNode == null)
-				this.leftNode = new TNode(0);
-			return this.leftNode;
-		}
-		
-		public TNode getEqual() {
-			if(this.equalNode == null)
-				this.equalNode = new TNode(0);
-			return this.equalNode;
-		}
-		
-		public void IncreaseSubTree() {
-			this.subTreeSize++;
-		}
-		
-		public void DecreaseSubTree() {
-			this.subTreeSize--;
-		}
-		
-		public int getValue() {
-			return this.value;
-		}
-		public int getSize() {
-			return this.subTreeSize;
-		}
-		
-		public void setValue(int v) {
-			this.value = v;
-		}
-		
-		public void setLeaf() {
-			this.leafNode = true;
-		}
-		
-		public boolean isLeaf() {
-			return this.leafNode;
-		}
+	public int Size() {
+		return root.getSize();
 	}
+	
+	
 }
